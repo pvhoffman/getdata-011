@@ -5,7 +5,7 @@ The purpose of the files within this repository is to create a tidy dataset with
 
 The tidy dataset is produced from executing the R script [run_analysis.R](run_analysis.R). This script assumes the unzipped data to be within the current working directory.
 
-[CodeBook.md](CodeBook.md) contains a description of the dataset and the fields therein produced from executing[run_analysis.R](run_analysis.R). 
+[CodeBook.md](CodeBook.md) contains a description of the dataset and the fields therein produced from executing [run_analysis.R](run_analysis.R). 
 
 
 
