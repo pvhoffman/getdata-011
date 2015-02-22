@@ -11,8 +11,16 @@ library(data.table)
 is.verbose <- TRUE
 #------------------------------------------------------------------------------
 # main entry point - call this function to tidy the data
+# the tidy data is saved in the current directory
+# as X_tidy.txt, y_tidy.txt, and subject_tidy.txt
 run.analysis.main <- function(){
-    label.data(name.activities(extract.measurments(merge.data())))
+    tidy_dataset <- label.data(name.activities(extract.measurments(merge.data())))
+    write.table(tidy_dataset$X, "X_tidy.txt")
+    write.table(tidy_dataset$y, "y_tidy.txt")
+    write.table(tidy_dataset$subject, "subject_tidy.txt")
+
+    # step 5 of the exercise
+    average.data(tidy_dataset)
 }
 #------------------------------------------------------------------------------
 # 1. Merge the training and the test sets to create one data set.
@@ -69,15 +77,28 @@ name.activities <- function(extracted_data){
     #  4 SITTING
     #  5 STANDING
     #  6 LAYING
-    extracted_data$y$activity_name <- as.character(extracted_data$y[,1])
-    extracted_data$y$activity_name[extracted_data$y[,1] == 1] <- "WALKING"
-    extracted_data$y$activity_name[extracted_data$y[,1] == 2] <- "WALKING_UPSTAIRS"
-    extracted_data$y$activity_name[extracted_data$y[,1] == 3] <- "WALKING_DOWNSTAIRS"
-    extracted_data$y$activity_name[extracted_data$y[,1] == 4] <- "SITTING"
-    extracted_data$y$activity_name[extracted_data$y[,1] == 5] <- "STANDING"
-    extracted_data$y$activity_name[extracted_data$y[,1] == 6] <- "LAYING"
-    extracted_data$y$activity_name <- as.factor(extracted_data$y$activity_name)
-    extracted_data
+    ys <- as.character(extracted_data$y[,1])
+    ys[ys == "1"] <- "WALKING"
+    ys[ys == "2"] <- "WALKING_UPSTAIRS"
+    ys[ys == "3"] <- "WALKING_DOWNSTAIRS"
+    ys[ys == "4"] <- "SITTING"
+    ys[ys == "5"] <- "STANDING"
+    ys[ys == "6"] <- "LAYING"
+    ys <- as.factor(ys)
+
+    list(X=extracted_data$X
+         , y=data.frame(ys)
+         , subject=extracted_data$subject)
+
+#     extracted_data$y$activity_name <- as.character(extracted_data$y[,1])
+#     extracted_data$y$activity_name[extracted_data$y[,1] == 1] <- "WALKING"
+#     extracted_data$y$activity_name[extracted_data$y[,1] == 2] <- "WALKING_UPSTAIRS"
+#     extracted_data$y$activity_name[extracted_data$y[,1] == 3] <- "WALKING_DOWNSTAIRS"
+#     extracted_data$y$activity_name[extracted_data$y[,1] == 4] <- "SITTING"
+#     extracted_data$y$activity_name[extracted_data$y[,1] == 5] <- "STANDING"
+#     extracted_data$y$activity_name[extracted_data$y[,1] == 6] <- "LAYING"
+#     extracted_data$y$activity_name <- as.factor(extracted_data$y$activity_name)
+#     extracted_data
 }
 #------------------------------------------------------------------------------
 # 4. Appropriately labels the data set with descriptive variable names. 
@@ -99,7 +120,7 @@ label.data <- function(data_in){
                 , "fBodyBodyAccJerkMagMean", "fBodyBodyAccJerkMagStd"
                 , "fBodyBodyGyroMagMean", "fBodyBodyGyroMagStd"
                 , "fBodyBodyGyroJerkMagMean", "fBodyBodyGyroJerkMagStd")
-    ynames <- c("Activity.ID", "Activity.Name")
+    ynames <- c("Activity.Name")
     snames <- c("Subject.ID")
 
     names(data_in$X) <- xnames
@@ -109,8 +130,12 @@ label.data <- function(data_in){
 }
 #------------------------------------------------------------------------------
 # 5. From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
+# data_in is a list with members X = separted/merged X data, y = separted/merged ydata, subject = subject data
 average.data <- function(data_in){
-    # aggregate(. ~subject + activity, data_in, mean)
+    dsnew <- cbind(data_in$X, data_in$y, data_in$subject)
+    names(dsnew) <- c(names(data_in$X), names(data_in$y), names(data_in$subject))
+    res <- aggregate(. ~Subject.ID + Activity.Name, dsnew, mean)
+    write.table(res, "average_data.txt")
 }
 #------------------------------------------------------------------------------
 # utility functions
