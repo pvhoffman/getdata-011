@@ -10,7 +10,6 @@ Fields beginning with 'f' are measurments defined in the frequency domain.
 All fields are measurements on the mean and standard deviation of the observational measurment.
 '-XYZ' is used to denote 3-axial signals in the X, Y and Z directions.
 All measurements are floating point.
-*Fields:*
 +  tBodyAccMean-XYZ 
 +  tBodyAccStd-XYZ
 +  tGravityAccMean-XYZ 
@@ -48,12 +47,10 @@ All measurements are floating point.
  
 ### y_tidy.txt
 Rows containing the activity being performed by the subject from matching rows in X_tidy.txt
-*Fields:*  
 +  Activity.Name - Factor field, one of: WALKING, WALKING_UPSTAIRS, WALKING_DOWNSTAIRS, SITTING, STANDING, LAYING. 
 
 ### subject_tidy.txt
 Rows containing the subject identifier matching the rows of the activity, in y_tidy.txt, measured from matching rows in X_tidy.txt.
-*Fields:*  
 +  Subject.ID - Integer field identifying the subject, 1 - 30, performing the activity, matching the corresponding row in y_tidy.txt, and measurement in the corresponding row in X_tidy.txt.
 
 
